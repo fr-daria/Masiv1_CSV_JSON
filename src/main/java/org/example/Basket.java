@@ -31,27 +31,42 @@ public class Basket implements Serializable {
         }
     }
 
-    public void saveJSON(File textFile) {
-        try (PrintWriter writer = new PrintWriter(textFile)) {
-            Gson gson = new Gson();
-            String json = gson.toJson(this);
-            writer.print(json);
+    public void saveTxt(File textFile) {
+        try (FileOutputStream fos = new FileOutputStream(textFile)) {
+            for (String product : productsInBasket) {
+                fos.write(product.getBytes());
+            }
+            System.out.println();
+            for (int price : prices) {
+                fos.write(price);
+            }
+            System.out.println();
+            for (int ct : count) {
+                fos.write(ct);
+            }
+            System.out.println();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Basket loadFromJSONFile(File textFile) throws IOException {
+    public static Basket loadFromTxtFile(File textFile) throws IOException {
         Basket b  = null;
         int i;
         try (BufferedReader ips = new BufferedReader(new FileReader(textFile))) {
-            StringBuilder builder = new StringBuilder();
-            String line = null;
-            while ((line = ips.readLine()) != null){
-                builder.append(line);
-            }
-            Gson gson = new Gson();
-            b = gson.fromJson(builder.toString() , Basket.class);
+            String p = ips.readLine();
+            String z = ips.readLine();
+            String c = ips.readLine();
+
+            b.productsInBasket = p.split(" ");
+            b.prices = Arrays.stream(z.split(" "))
+                    .map(Integer :: parseInt)
+                    .mapToInt(Integer :: intValue)
+                    .toArray();
+            b.count = Arrays.stream(z.split(" "))
+                    .map(Integer :: parseInt)
+                    .mapToInt(Integer :: intValue)
+                    .toArray();
         }
         return b;
     }
