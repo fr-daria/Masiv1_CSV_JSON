@@ -1,5 +1,7 @@
 package org.example;
 
+import com.opencsv.CSVWriter;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,9 +22,7 @@ public class ClientLog {
 
         }
         try (CSVWriter writer = new CSVWriter(new FileWriter(txtFile, true))) {
-            writer.writer(log);
+            writer.writeAll(log);
         }
-
-
     }
 }
